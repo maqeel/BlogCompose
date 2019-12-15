@@ -1,0 +1,25 @@
+version: "3"
+services:
+  db:
+    image: "aqeel4mpak/blog_db"
+    container_name: "blogdb_postgres"
+    ports:
+      - "5432:5432"
+    volumes:
+      - blogdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+  register:
+    image: "aqeel4mpak/blog_site"
+    entrypoint: 
+      - python
+      - register.py
+    depends_on:
+      - db
+    ports:
+      - 5000:5000
+volumes:
+  blogdata:
